@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rumo ao Novo | Brasfort</title>
+ 
+<!-- Fonte Barlow -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+ 
+<style>
+    body {
+        margin: 0;
+        font-family: 'Barlow', sans-serif;
+        overflow: hidden;
+        background-color: #000B29;
+        color: #FEFEFE;
+    }
+ 
+    /* LOADER */
+    .loader {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100vh;
+        background: #000B29;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+ 
+    .loader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+    }
+ 
+    .logo img {
+        opacity: 0;
+        transform: translateY(20px);
+        height: 35px;
+    }
+ 
+    /* TELA PRINCIPAL */
+    .main {
+        opacity: 0;
+        transition: opacity 1s ease;
+        pointer-events: none;
+    }
+ 
+    .main.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+ 
+    .main {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        position: relative;
+        background: url('https://www.brasfort.com.br/images/2020/10/11/whatsapp-image-2020-08-21-at-21.33.59.jpeg') no-repeat center center/cover;
+        text-align: center;
+    }
+ 
+    body.fade-out {
+        opacity: 0;
+        transition: opacity 1s ease;
+    }
+ 
+    /* SOBREPOSIÇÃO AZUL */
+    .overlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba( 0, 11, 41, 0.9);
+        z-index: 1;
+    }
+ 
+    /* BOLHAS */
+    .bubble {
+        position: absolute;
+        bottom: -100px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: rise 12s infinite ease-in;
+        z-index: 2;
+    }
+ 
+    @keyframes rise {
+        0% { transform: translateY(0) scale(1); opacity: 0.4; }
+        100% { transform: translateY(-1200px) scale(1.2); opacity: 0; }
+    }
+ 
+    /* CONTEÚDO */
+    .content {
+        position: relative;
+        z-index: 3;
+        max-width: 900px;
+        text-align: justify;
+        line-height: 1.6;
+        font-size: 1.3rem;
+        color: #FEFEFE;
+        padding: 0 40px;
+    }
+ 
+    h1 {
+        font-size: 2.5rem;
+        color: #D2AE6D;
+        margin-bottom: 10px;
+        text-align: center;
+        letter-spacing: 3px;
+    }
+ 
+    .typed-text {
+        white-space: pre-wrap;
+        overflow: hidden;
+        display: inline-block;
+    }
+ 
+    /* LEGENDA */
+    .caption {
+        margin-top: 40px;
+        text-align: center;
+        font-size: 1.1rem;
+        color: #FFFFFF;
+        opacity: 0;
+        transition: opacity 1s ease;
+        z-index: 3;
+        cursor: default;
+    }
+ 
+    .caption.active {
+        opacity: 1;
+        cursor: pointer;
+    }
+ 
+    .caption::after {
+        content: ' ▼';
+        animation: blink 1.5s infinite;
+    }
+ 
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+</style>
+</head>
+ 
+<body>
+ 
+    <!-- LOADER INICIAL -->
+    <div class="loader">
+        <div class="logo"><img src="https://www.brasfort.com.br/images/brasfort-logo-01.png" alt="Logo" id="logo" /></div>
+    </div>
+ 
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="main">
+        <div class="overlay"></div>
+ 
+        <!-- Bolhas animadas -->
+        <div class="bubble" style="width:60px; height:60px; left:10%; animation-duration:14s;"></div>
+        <div class="bubble" style="width:40px; height:40px; left:25%; animation-duration:10s;"></div>
+        <div class="bubble" style="width:80px; height:80px; left:50%; animation-duration:18s;"></div>
+        <div class="bubble" style="width:30px; height:30px; left:70%; animation-duration:12s;"></div>
+        <div class="bubble" style="width:50px; height:50px; left:85%; animation-duration:15s;"></div>
+ 
+        <div class="content">
+            <h1>RUMO AO NOVO</h1>
+            <p class="typed-text"></p>
+            <div class="caption">Clique na tela para avançar</div>
+        </div>
+    </div>
+ 
+<script>
+    const logo = document.getElementById('logo');
+    const loader = document.querySelector('.loader');
+    const main = document.querySelector('.main');
+    const caption = document.querySelector('.caption');
+    let startTime = null;
+ 
+    // ANIMAÇÃO DO LOGO
+    function animate(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / 2000, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        logo.style.opacity = ease;
+        logo.style.transform = `translateY(${20 * (1 - ease)}px)`;
+        if (progress < 1) requestAnimationFrame(animate);
+        else {
+            loader.classList.add('fade-out');
+            setTimeout(() => {
+                main.classList.add('active');
+                startTyping(); // inicia digitação logo após o fade
+            }, 800);
+        }
+    }
+    requestAnimationFrame(animate);
+ 
+    // TEXTO DIGITADO
+    const text = `Toda mudança traz diferentes sentimentos — pode causar surpresa, dúvida ou até resistência. Mas, com o tempo, também traz aprendizado e crescimento. 
+ 
+Seguir rumo ao novo é se permitir sair da zona de conforto, pensar de outro jeito e buscar maneiras melhores de fazer o que já sabemos.
+ 
+Pare e pense: como você lida com o novo? E como podemos, juntos, transformar cada mudança em uma chance de crescer e fazer melhor?`;
+ 
+    const textElement = document.querySelector(".typed-text");
+    let index = 0;
+ 
+    function startTyping() {
+        typeEffect();
+        // habilita o clique apenas após 30s
+        setTimeout(() => {
+            caption.classList.add('active');
+            document.body.style.pointerEvents = "auto";
+        }, 20000);
+    }
+ 
+    function typeEffect() {
+        if (index < text.length) {
+            textElement.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeEffect, 55);
+        }
+    }
+ 
+    // CLIQUE PARA AVANÇAR (só funciona após 30s)
+    document.body.style.pointerEvents = "none";
+    document.body.addEventListener("click", () => {
+        if (!caption.classList.contains("active")) return; // evita clique antecipado
+        document.body.classList.add("fade-out");
+        setTimeout(() => {
+            window.location.href = "https://acessopublico.github.io/rumoaonovo-cartaaberta/"; // altere o destino aqui
+        }, 1000);
+    });
+</script>
+ 
+</body>
+</html>
